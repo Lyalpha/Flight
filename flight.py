@@ -4,11 +4,11 @@
 02/2016
 J.D.Lyman@warwick.ac.uk
 
-Calculates the F_light (flight) statistic for an image given a pixel location 
-and a segmentation map of the image. Will optionally output a distribution of 
+Calculates the F_light (flight) statistic for an image given a pixel location
+and a segmentation map of the image. Will optionally output a distribution of
 flight values with associated probabilities if an uncertainty of the location
 is provided.
-** All pixel indices should be given in FITS format (i.e. 1,1 is centre of 
+** All pixel indices should be given in FITS format (i.e. 1,1 is centre of
    lower-left pixel)**
 
 $ ./flight.py -h
@@ -30,8 +30,8 @@ Nutshell:
     around the location given (this is default)
   - Alternatively a segmask can be provided for custom jobs, should be zero for
     masked pixels and one for pixels to be used in flight calculations
-- flight calculations are made on this seg mask array based on the pixel location
-  chosen
+- flight calculations are made on this seg mask array based on the pixel
+  location chosen
 - If a location uncertainty is given then flight probabilities are written to a
   text file also
 - If plots are not turned off:
@@ -44,8 +44,8 @@ Nutshell:
     is created also
 
 Known issues:
- - If the location uncertainty extends close to an image border, it will 
-   only calculate the probability within the image, thus the probabilities wont 
+ - If the location uncertainty extends close to an image border, it will
+   only calculate the probability within the image, thus the probabilities wont
    add to ~1
 
 Plotting of NE compass was based on some code of pywcsgrid2 by leejjoon
@@ -78,7 +78,7 @@ from matplotlib import rc
 rc('font',**{'family':'serif','serif':['Times New Roman'],'size':18})
 rc('text', usetex=True)
 
-# the file and directory path to this script, in case you call it from 
+# the file and directory path to this script, in case you call it from
 # another directory, so relative paths to the script are still intact
 FILEPATH = os.path.realpath(__file__)
 FILEDIR = os.path.dirname(FILEPATH)
@@ -159,7 +159,7 @@ class AnchoredCompass(AnchoredOffsetbox):
         self.txt1.set_rotation(0) # a1-180
         self.txt2.set_position((x2t, y2t))
         self.txt2.set_rotation(0) # a2-90
-                                    
+
 
     def draw(self, renderer):
         self._update_arrow(renderer)
@@ -215,26 +215,27 @@ class CalcFlight(object):
     loc : list
         Pixel location to calculate F_light value [x,y].
     locuncert : list, optional
-        Uncertainty on `loc` in units of pixels [sig_x, sig_y]. This will 
+        Uncertainty on `loc` in units of pixels [sig_x, sig_y]. This will
         activate probabilistic F_light. Defaults to `None`.
     sciext : int or str, optional
         The FITS extension of `image` containing the science data. Defaults to
         `SCI`.
-    segmap : 
+    segmap :
         Filepath to an existing segmentation map of `image`. Defaults to `None`.
     segsect : `"t"`, `"u"` or list of ints, optional
         The method used to select objects in the segmntation map
         t = touching, the island of pixels under the location that including
                       only and all touching pixels
         u = underlying, the segmentation object underlying the location only
-        [i,j,k...] = manual selection, the segmap numbers of objects to 
+        [i,j,k...] = manual selection, the segmap numbers of objects to
                                        specifically use
         Defaults to `t`.
-    segmask : str, optional 
-        Filepath to an existing segmentation mask of `image`. Defaults to `None`.
+    segmask : str, optional
+        Filepath to an existing segmentation mask of `image`. Defaults to
+        `None`.
     savemask : bool, optional
-        Save a copy of the segmenation mask with the filename `image`_SEGMASK.fits.
-        Defaults to `False`
+        Save a copy of the segmenation mask with the filename
+        `image`_SEGMASK.fits.  Defaults to `False`
     plots: bool, optional
         Output a heat map image of the F_light statistic with the location (or
         location uncertainty) marked. Defaults to `True`
@@ -244,8 +245,8 @@ class CalcFlight(object):
         The name of a matplotlib colormap to be used for the for the heat map.
         Defaults to `coolwarm_r`
     cbar: bool, optional
-        Show a colour bar underneath the heatmap with the F_light values. Defaults
-        to `True`.
+        Show a colour bar underneath the heatmap with the F_light
+        values. Defaults to `True`.
     compass: float or bool, optional
         Show a NE compass on the heat map. If `True` will look for `ORIENTAT`
         keyword in the header. Otherwise specify as the degrees east of north
@@ -253,25 +254,28 @@ class CalcFlight(object):
     label: str, optional
         Put a label of the object name on heat map. Defaults to `None`.
     linpix: float, optional
-        The linear size of a pixel at the distance of the host. Defaults to `None`.
+        The linear size of a pixel at the distance of the host. Defaults to
+        `None`.
     linscale: float, optional
-        The length of a linear scale bar to plot on heat map (linpix must be 
+        The length of a linear scale bar to plot on heat map (linpix must be
         defined to use this). Defaults to `None`.
     scaleunit: str, optional
-        Unit to include after scale (e.g. 'kpc', '"'), linpix and linscale should 
-        both be in this unit. Defaults to `None`.
-    marker_loc: list of length-2 lists, optional 
-        The locations to place cosmetic markers on the heat map (e.g. [[1,2],[3,4]...]).
-        Defaults to `None`.
+        Unit to include after scale (e.g. 'kpc', '"'), linpix and linscale
+        should both be in this unit. Defaults to `None`.
+    marker_loc: list of length-2 lists, optional
+        The locations to place cosmetic markers on the heat map
+        (e.g. [[1,2],[3,4]...]).  Defaults to `None`.
     marker_style: list, optional
-        List of matplotlib marker styles to use as markers, these will be cycled through
-        when plotting marker_loc entries. Defaults to `["+","x","1","d"]`.
+        List of matplotlib marker styles to use as markers, these will be
+        cycled through when plotting marker_loc entries. Defaults to
+        `["+","x","1","d"]`.
     quiet: bool, optional
         Don't print anything unless something goes wrong. Defaults to `False`.
     """
-    def __init__(self, image, loc, locuncert=None, sciext="SCI", segmap=None, segsect='t',
-                 segmask=None, savemask=True, plots=True, square_plot=False, cmap="coolwarm_r",
-                 cbar=True, compass=True, label=None, linpix=None, linscale=None, scaleunit=None,
+    def __init__(self, image, loc, locuncert=None, sciext="SCI", segmap=None,
+                 segsect='t', segmask=None, savemask=True, plots=True,
+                 square_plot=False, cmap="coolwarm_r", cbar=True, compass=True,
+                 label=None, linpix=None, linscale=None, scaleunit=None,
                  marker_loc=None, marker_style=["+","x","1","d"], quiet=False):
 
         # grab image data from science extension of the image
@@ -316,7 +320,7 @@ class CalcFlight(object):
         if not self.quiet:
             print "running main"
 
-        # make a segmentation map if we don't have one (and we don't have a 
+        # make a segmentation map if we don't have one (and we don't have a
         # seg mask provided to us)
         if self.segmap is None and self.segmask is None:
             self.segmap = self.makesegmap()
@@ -326,7 +330,8 @@ class CalcFlight(object):
             self.segmap_arr = fits.getdata(self.segmap)
             # if there isn't a segmask object at the pixel location, we can't
             # find (u)nderlying or (t)ouching sections so must exit here
-            if self.segmap_arr[self.yloc,self.xloc] == 0 and self.segsect in ("t","u"):
+            if (self.segmap_arr[self.yloc,self.xloc] == 0
+                and self.segsect in ("t","u")):
                 print "no segmentation map object at pixel",
                 print "location {},{}".format(self.xloc,self.yloc)
                 return
@@ -336,7 +341,8 @@ class CalcFlight(object):
             self.segmask_arr = fits.getdata(self.segmask)
         # save the mask, if desired
         if self.savemask:
-                fits.writeto(self.basename+MASKSUFF,data=self.segmask_arr.astype('int'),
+                fits.writeto(self.basename+MASKSUFF,
+                             data=self.segmask_arr.astype('int'),
                              clobber=True)
         # safety check to make sure there are objects in the segmask
         if np.sum(self.segmask_arr) == 0:
@@ -347,7 +353,8 @@ class CalcFlight(object):
         # calculate flight
         self.getflight()
 
-        # calculate the probabilities of flight values if we have a location uncertainty
+        # calculate the probabilities of flight values if we have a location
+        # uncertainty
         if self.locuncert is not None:
             self.getflight_prob()
 
@@ -366,7 +373,7 @@ class CalcFlight(object):
             print "     with a prob:  {:.3f}".format(self.likely_prob)
             print
 
-        
+
     def makesegmap(self):
         if not self.quiet:
             print "making segmentation map"
@@ -376,7 +383,7 @@ class CalcFlight(object):
         try:
             open(segmap)
         except IOError:
-            raise Exception("segmentation map ({}) not created for some reason"\
+            raise Exception("segmentation map ({}) not created for some reason"
                             .format(segmap))
         else:
             return segmap
@@ -474,17 +481,21 @@ class CalcFlight(object):
                   max(y-3*ys,0),
                   min(math.ceil(y+3*ys),self.imagearray.shape[1]))
         minx,maxx,miny,maxy = map(int, bounds)
-    
+
         pco = self.maskedarray[minx:maxx,miny:maxy]
 
         # calculated distance of the edges of pixels from our location
-        x_dist, y_dist = np.arange(pco.shape[0])-x+minx, np.arange(pco.shape[1])-y+miny
+        x_dist, y_dist = (np.arange(pco.shape[0])-x+minx,
+                          np.arange(pco.shape[1])-y+miny)
         x_probs, y_probs = [], []
-        # integrate from these distances to distance+1 (i.e. 1 pixel) over the gaussian
+        # integrate from these distances to distance+1 (i.e. 1 pixel) over the
+        # gaussian
         for xl in x_dist:
-            x_probs.append(integrate.quad(stats.norm.pdf,xl,xl+1,args=(0,xs))[0])
+            x_probs.append(integrate.quad(stats.norm.pdf,xl,xl+1,
+                                          args=(0,xs))[0])
         for yb in y_dist:
-            y_probs.append(integrate.quad(stats.norm.pdf,yb,yb+1,args=(0,ys))[0])
+            y_probs.append(integrate.quad(stats.norm.pdf,yb,yb+1,
+                                          args=(0,ys))[0])
         # multiply the probabilities of the 1D gaussians to make a 2D pdf
         yy, xx = np.meshgrid(y_probs,x_probs)
         p = xx*yy
@@ -493,7 +504,8 @@ class CalcFlight(object):
         sortindices = np.searchsorted(self.sortedpixelvalues,self.maskedarray)
         pco_flight_array = self.cumarray[sortindices][minx:maxx,miny:maxy]
 
-        # clip flights to 0->1 so that all non-segmask location count to the Flight=0 bin
+        # clip flights to 0->1 so that all non-segmask location count to the
+        # Flight=0 bin
         pco_flight_array = np.clip(pco_flight_array, a_min=0, a_max=1)
 
         # define unique flight values and bin the probabilities of each
@@ -516,7 +528,7 @@ class CalcFlight(object):
 
     def makeplots(self):
         if not self.quiet:
-            print "making plots" 
+            print "making plots"
         # Heatmap plot:
         plt.clf()
         # clip top/bottom pixel values for plotting
@@ -525,7 +537,7 @@ class CalcFlight(object):
         cutpix = int(math.ceil(CLIP*npix))
         low_cut = sortedarray[cutpix]
         high_cut = sortedarray[npix-cutpix]
-        
+
         # trim the image array to just enclose all the non-zero pixels from the
         # segmentation mask. Add a 1pixel border for good measure
         z = np.where(self.segmask_arr>0)
@@ -561,13 +573,15 @@ class CalcFlight(object):
         maxy = min(maxy,self.imagearray.shape[1])
 
         # apply the cuts and bounding box to image array
-        imageplotarray = np.clip(self.imagearray,low_cut,high_cut)[minx:maxx,miny:maxy]
+        imageplotarray = np.clip(self.imagearray,
+                                 low_cut,high_cut)[minx:maxx,miny:maxy]
         plt.imshow(imageplotarray,origin="lower",interpolation="nearest",
                    cmap="Greys")
         # create the analagous array but with flight values and mask zeros
         sortindices = np.searchsorted(self.sortedpixelvalues,self.maskedarray)
         heatplotarray = self.cumarray[sortindices]
-        heatplotarray = np.ma.masked_where(self.maskedarray==0, heatplotarray)[minx:maxx,miny:maxy]
+        heatplotarray = np.ma.masked_where(self.maskedarray==0,
+                                           heatplotarray)[minx:maxx,miny:maxy]
         plt.imshow(heatplotarray,origin="lower",interpolation="nearest",
                    cmap=self.cmap)
         self.heatplotarray = heatplotarray
@@ -599,8 +613,10 @@ class CalcFlight(object):
                 compass = AnchoredCompass(ax1,ori=orientat)
                 ax1.add_artist(compass)
         if not None in (self.linpix,self.linscale):
-            npix = self.linscale/float(self.linpix) # no. pixels scale line needs to be
-            plotx = (npix/self.heatplotarray.shape[1]) # length of line/axis
+            # no. pixels scale line needs to be
+            npix = self.linscale/float(self.linpix)
+            # length of line/axis
+            plotx = (npix/self.heatplotarray.shape[1])
             ax1.plot((0.05,0.05+plotx),(0.05,0.05),c="k",lw=2,
                      transform=ax1.transAxes,
                      path_effects=[PathEffects.withStroke(linewidth=4,
@@ -613,23 +629,24 @@ class CalcFlight(object):
         if self.marker_loc is not None:
             for loc, style in zip(self.marker_loc, cycle(self.marker_style)):
                 ax1.plot(loc[0]-miny-1,loc[1]-minx-1,marker=style,markersize=20,
-                                     c="k",markerfacecolor="none",markeredgewidth=2)
+                         c="k",markerfacecolor="none", markeredgewidth=2)
 
 
-        # I have no idea why these needs an extra -0.5 in each axes, but it is always
-        # plotted offset from the correct position. Purely cosmetic in any case.
+        # I have no idea why these needs an extra -0.5 in each axes, but it is
+        # always plotted offset from the correct position. Purely cosmetic in
+        # any case.
         if self.locuncert is not None:
-            width = 2*self.locuncert[0]#/self.heatplotarray.shape[1]
-            height = 2*self.locuncert[1]#/self.heatplotarray.shape[0]
-            yaxes = (self.yloc-minx)-0.5#/self.heatplotarray.shape[1]
-            xaxes = (self.xloc-miny)-0.5#/self.heatplotarray.shape[0]
+            width = 2*self.locuncert[0]
+            height = 2*self.locuncert[1]
+            yaxes = (self.yloc-minx)-0.5
+            xaxes = (self.xloc-miny)-0.5
             ax1.add_artist(Ellipse((xaxes,yaxes),width,height,
-                                   #transform=ax1.transAxes,
                                    facecolor="none",edgecolor="k",lw=2,
                                    ls="dashed"))
         else:
-            self.starmark = ax1.plot(self.xloc-miny-0.5,self.yloc-minx-0.5,marker="*",markersize=20,
-                                     c="k",markerfacecolor="none",markeredgewidth=2)
+            self.starmark = ax1.plot(self.xloc-miny-0.5,self.yloc-minx-0.5,
+                                     marker="*", markersize=20, c="k",
+                                     markerfacecolor="none", markeredgewidth=2)
         if self.cbar:
             color_bar = plt.colorbar(orientation='horizontal')
             cbytick_obj = plt.getp(color_bar.ax.axes, 'yticklabels')
@@ -641,13 +658,16 @@ class CalcFlight(object):
             plt.clf()
             ax2 = plt.axes()
             ax2.set_aspect(0.3333)
-            plt.hist(self.uniq_fl, bins=20, range=(0,1), weights=self.total_probs,color="teal")
+            plt.hist(self.uniq_fl, bins=20, range=(0,1),
+                     weights=self.total_probs,color="teal")
             plt.xlim(0,1)
             plt.ylim(0,1)
             if self.label is not None:
-                ax2.text(0.03,0.87,"\\textbf{"+self.label+"}",ha="left",va="center",
-                         transform=ax2.transAxes,size=20,weight="bold",color="k",
-                         path_effects=[PathEffects.withStroke(linewidth=3,foreground="w")])
+                ax2.text(0.03,0.87,"\\textbf{"+self.label+"}",ha="left",
+                         va="center",transform=ax2.transAxes,size=20,
+                         weight="bold",color="k",
+                         path_effects=[PathEffects.withStroke(linewidth=3,
+                                                              foreground="w")])
             plt.xlabel("F$_\\textrm{light}$")
             plt.ylabel("Probability")
             plt.savefig(self.basename+"_flprob.eps",bbox_inches="tight")
@@ -665,7 +685,7 @@ if __name__ == "__main__":
                         'of object in format `x,y`')
     parser.add_argument('--locuncert',type=str,default=None,
                         help='the uncertainty in the specified location, given '
-                        ' in units of pixels in the form `sigx,sigy`. The flight'
+                        'in units of pixels in the form `sigx,sigy`. The flight'
                         'value will be calculated from a distribution based on '
                         'this uncertainty ellipse (default: None)')
     parser.add_argument('-e','--sciext',default='SCI',help='extension '
@@ -692,9 +712,9 @@ if __name__ == "__main__":
     parser.add_argument('-p','--noplots',dest='plots',action='store_false',
                         help='turn off plotting of results')
     parser.add_argument('--square_plot',action='store_true',
-                        help='force heat map to be square')  
-    parser.add_argument('--cmap',type=str,default='coolwarm_r',help='colormap to '
-                        'use for heat map plot. (default:`coolwarm_r`')
+                        help='force heat map to be square')
+    parser.add_argument('--cmap',type=str,default='coolwarm_r',help='colormap '
+                        'to use for heat map plot. (default:`coolwarm_r`')
     parser.add_argument('--nocbar',dest='cbar',action='store_false',
                         help='do not display a colour bar legend on heat map')
     parser.add_argument('--nocompass',dest='compass',action='store_false',
@@ -715,17 +735,17 @@ if __name__ == "__main__":
                         '- linpix must be defined and this scale will be in the'
                         ' the same units (default: None)')
     parser.add_argument('--scaleunit',type=str,default="",
-                        help='unit to include after scale (e.g. "kpc", \"), ' 
+                        help='unit to include after scale (e.g. "kpc", \"), '
                         'linpix and  linscale should both be in this unit '
                         '(default: "")')
     parser.add_argument('--marker_loc',type=str,default=None,
-                        help='additional locations to mark on the heatmap of the'
-                        ' form `x1,y1,x2,y2..xn,yn` (default: None)')
+                        help='additional locations to mark on the heatmap of '
+                        'the form `x1,y1,x2,y2..xn,yn` (default: None)')
     parser.add_argument('--marker_style',type=str,default="+,x,1,d",
                         help='comma-separated matplotlib marker styles for '
                         'marker_loc (default: "+,x,1,d")')
     parser.add_argument('-q','--quiet',action='store_true',
-                        help='run silently (unless something goes wrong)') 
+                        help='run silently (unless something goes wrong)')
     args = parser.parse_args()
 
     splitloc = args.loc.split(",")
@@ -734,7 +754,7 @@ if __name__ == "__main__":
         sys.exit(2)
     else:
         try:
-            args.loc = map(float,splitloc) # convert loc to floats
+            args.loc = map(float,splitloc)
         except ValueError:
             print "location needs to be x,y pixel coordinates, numeric only"
             sys.exit(2)
@@ -745,7 +765,7 @@ if __name__ == "__main__":
             sys.exit(2)
         else:
             try:
-                args.locuncert = map(float, splitlocuncert) # convert loc to floats
+                args.locuncert = map(float, splitlocuncert)
             except ValueError:
                 print "locuncert needs to be `sigx,sigy`, numeric only"
                 sys.exit(2)
@@ -763,26 +783,28 @@ if __name__ == "__main__":
         try:
             fits.open(args.segmap)
         except IOError:
-            print "Couldn't open {} with fits, make sure it exists and is".format(args.segmap),
+            print "Couldn't open {} with fits, make sure it exists and is"\
+                .format(args.segmap),
             print "a valid FITS file"
             sys.exit(2)
     if args.segmask is not None:
         try:
             fits.open(args.segmask)
         except IOError:
-            print "Couldn't open {} with fits, make sure it exists and is".format(args.segmask),
+            print "Couldn't open {} with fits, make sure it exists and is"\
+                .format(args.segmask),
             print "a valid FITS file"
             sys.exit(2)
     if args.marker_loc is not None:
         splitmarker = args.marker_loc.split(",")
         if len(splitmarker)% 2 != 0:
-            print "marker_loc should be pairs of coordinates of the format `x,y`"
+            print "marker_loc should be pairs of coordinates `x,y`"
             sys.exit(2)
         else:
             try:
-                args.marker_loc = map(float, splitmarker) # convert loc to floats
+                args.marker_loc = map(float, splitmarker)
             except ValueError:
-                print "marker_loc needs to be x1,y1,x2,y2.. pixel coordinates, numeric only"
+                print "marker_loc needs to be x1,y1,x2,y2.. pixel coordinates"
                 sys.exit(2)
     if args.marker_style is not None:
         args.marker_style = args.marker_style.split(",")
