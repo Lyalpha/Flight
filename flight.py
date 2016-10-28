@@ -779,6 +779,11 @@ if __name__ == "__main__":
             print "defining sections to use"
             sys.exit(2)
 
+    try:
+        args.sciext = int(args.sciext)
+    except ValueError:
+        pass
+
     if args.segmap is not None:
         try:
             fits.open(args.segmap)
@@ -798,13 +803,14 @@ if __name__ == "__main__":
     if args.marker_loc is not None:
         splitmarker = args.marker_loc.split(",")
         if len(splitmarker)% 2 != 0:
-            print "marker_loc should be pairs of coordinates `x,y`"
+            print "marker_loc should be pairs of coordinates `x1,y1,x2,y2..`"
             sys.exit(2)
         else:
             try:
-                args.marker_loc = map(float, splitmarker)
+                l = map(float, splitmarker)
+                args.marker_loc = [l[i:i+2] for i in range(0,len(l),2)]
             except ValueError:
-                print "marker_loc needs to be x1,y1,x2,y2.. pixel coordinates"
+                print "marker_loc needs to be `x1,y1,x2,y2..` only numeric"
                 sys.exit(2)
     if args.marker_style is not None:
         args.marker_style = args.marker_style.split(",")
