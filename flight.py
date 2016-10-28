@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 
 """
-02/2016
-J.D.Lyman@warwick.ac.uk
+10/2016
+J.D.Lyman
 
 Calculates the F_light (flight) statistic for an image given a pixel location
 and a segmentation map of the image. Will optionally output a distribution of
