@@ -1,0 +1,18 @@
+# FLIGHT
+# -----
+# Additional output parameters can be added for further analysis beyond Flight.
+# JDL 2014-08-01
+
+X_IMAGE
+Y_IMAGE
+NUMBER
+MAG_BEST
+MAG_AUTO
+FLAGS
+A_IMAGE
+B_IMAGE
+ELONGATION
+FWHM_IMAGE
+CLASS_STAR
+X_WORLD
+Y_WORLD
