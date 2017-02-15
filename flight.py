@@ -335,7 +335,7 @@ class CalcFlight(object):
             self.segmap_arr = fits.getdata(self.segmap)
             # if there isn't a segmask object at the pixel location, we can't
             # find (u)nderlying or (t)ouching sections so must exit here
-            if (self.segmap_arr[map(int, (self.yloc,self.xloc))] == 0
+            if (self.segmap_arr[int(self.yloc),int(self.xloc)] == 0
                 and self.segsect in ("t","u")):
                 print "no segmentation map object at pixel",
                 print "location {},{}".format(self.xloc,self.yloc)
