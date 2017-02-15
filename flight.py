@@ -330,7 +330,7 @@ class CalcFlight(object):
             self.segmap_arr = fits.getdata(self.segmap)
             # if there isn't a segmask object at the pixel location, we can't
             # find (u)nderlying or (t)ouching sections so must exit here
-            if (self.segmap_arr[self.yloc,self.xloc] == 0
+            if (self.segmap_arr[map(int, (self.yloc,self.xloc))] == 0
                 and self.segsect in ("t","u")):
                 print "no segmentation map object at pixel",
                 print "location {},{}".format(self.xloc,self.yloc)
@@ -391,7 +391,7 @@ class CalcFlight(object):
     def makesegmask(self):
         if not self.quiet:
             print "making segmentation mask"
-        y,x = self.xloc,self.yloc # save transposing arrays
+        y,x = map(int, (self.xloc,self.yloc)) # save transposing arrays
 
         if isinstance(self.segsect,str):
             if self.segsect[0] == "t":
