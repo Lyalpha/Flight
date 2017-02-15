@@ -47,6 +47,11 @@ Known issues:
  - If the location uncertainty extends close to an image border, it will
    only calculate the probability within the image, thus the probabilities wont
    add to ~1
+ - If the locuncert ellipse is very narrow compared to the size of a pixel, the
+   calculated probabilities may be incorrect as the integration relies on
+   scipy.integrate.quad, which can miss the peak if it is narrow. In the case of
+   extremely small uncertainty in a single pixel, the script may output the
+   probability of that pixel as 0.000 instead of 1.000, for example.
 
 Plotting of NE compass was based on some code of pywcsgrid2 by leejjoon
 (leejjoon.github.io/pywcsgrid2/)
