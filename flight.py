@@ -107,7 +107,7 @@ class AnchoredCompass(AnchoredOffsetbox):
     for ori (degrees E of N of the yaxis)
     """
     def __init__(self, ax, ori, loc=4, arrow_fraction=0.15,txt1="E", txt2="N",
-                 pad=0.1, borderpad=0.5, prop=None, frameon=False):
+                 pad=0.3, borderpad=0.5, prop=None, frameon=False):
         self._ax = ax
         self.ori = ori
         self._box = AuxTransformBox(ax.transData)
@@ -162,7 +162,7 @@ class AnchoredCompass(AnchoredOffsetbox):
         x2t, y2t = x0+d2*np.cos(a2/180.*np.pi), y0+d2*np.sin(a2/180.*np.pi)
         self.txt1.set_position((x1t, y1t))
         self.txt1.set_rotation(0) # a1-180
-        self.txt2.set_position((x2t, y2t))
+        self.txt2.set_position((x2t+20, y2t))
         self.txt2.set_rotation(0) # a2-90
 
 
@@ -293,7 +293,7 @@ class CalcFlight(object):
         self.basename = os.path.splitext(image)[0]
 
         # convert from FITS indexing to python indexing
-        self.xloc, self.yloc = loc[0] - 0.5, loc[1] - 0.5
+        self.xloc, self.yloc = loc[0] - 1, loc[1] - 1
         self.orig_location = loc
 
         shape = self.imagearray.shape
@@ -636,20 +636,16 @@ class CalcFlight(object):
                 ax1.plot(loc[0]-miny-1,loc[1]-minx-1,marker=style,markersize=20,
                          c="k",markerfacecolor="none", markeredgewidth=2)
 
-
-        # I have no idea why these needs an extra -0.5 in each axes, but it is
-        # always plotted offset from the correct position. Purely cosmetic in
-        # any case.
         if self.locuncert is not None:
             width = 2*self.locuncert[0]
             height = 2*self.locuncert[1]
-            yaxes = (self.yloc-minx)-0.5
-            xaxes = (self.xloc-miny)-0.5
+            yaxes = (self.yloc-minx)
+            xaxes = (self.xloc-miny)
             ax1.add_artist(Ellipse((xaxes,yaxes),width,height,
                                    facecolor="none",edgecolor="k",lw=2,
                                    ls="dashed"))
         else:
-            self.starmark = ax1.plot(self.xloc-miny-0.5,self.yloc-minx-0.5,
+            self.starmark = ax1.plot(self.xloc-miny,self.yloc-minx,
                                      marker="*", markersize=20, c="k",
                                      markerfacecolor="none", markeredgewidth=2)
         if self.cbar:
