@@ -191,9 +191,9 @@ def runsex(image,chkimg_type="NONE",chkimg_name="check.fits"):
     try:
         open(cat)
     except IOError:
-        print 'SExtractor didn\'t produce an object catalogue'
-        print 'SExtractor output:\n'+\
-                    open('/tmp/flightsex.tmp','r').read()
+        print('SExtractor didn\'t produce an object catalogue')
+        print('SExtractor output:\n'+\
+                    open('/tmp/flightsex.tmp','r').read())
         raise Exception("SExtracting failed")
 
     shutil.move(cat,os.path.splitext(image)[0]+CATSUFF)
@@ -323,7 +323,7 @@ class CalcFlight(object):
 
     def main(self):
         if not self.quiet:
-            print "running main"
+            print("running main")
 
         # make a segmentation map if we don't have one (and we don't have a
         # seg mask provided to us)
@@ -337,8 +337,8 @@ class CalcFlight(object):
             # find (u)nderlying or (t)ouching sections so must exit here
             if (self.segmap_arr[int(self.yloc),int(self.xloc)] == 0
                 and self.segsect in ("t","u")):
-                print "no segmentation map object at pixel",
-                print "location {},{}".format(self.xloc,self.yloc)
+                print("no segmentation map object at pixel", end=' ')
+                print("location {},{}".format(self.xloc,self.yloc))
                 return
             self.segmask_arr = self.makesegmask()
         # or use the provided segmask
@@ -351,8 +351,8 @@ class CalcFlight(object):
                              clobber=True)
         # safety check to make sure there are objects in the segmask
         if np.sum(self.segmask_arr) == 0:
-            print "no segmentation map objects matching",
-            print "value(s) {}".format(", ".join(map(str,self.segsect)))
+            print("no segmentation map objects matching", end=' ')
+            print("value(s) {}".format(", ".join(map(str,self.segsect))))
             return
 
         # calculate flight
@@ -367,21 +367,21 @@ class CalcFlight(object):
             self.makeplots()
 
         if not self.quiet:
-            print "finished main"
-            print
-            print "Image:            ",self.image
-            print "Location:         ",self.orig_location
-            print "Pixel value:      ",self.locpixvalue
-            print "F_light value:     {:.3f}".format(self.flight)
-            print "Weighted F_light "
-            print "     most likely:  {:.3f}".format(self.likely_flight)
-            print "     with a prob:  {:.3f}".format(self.likely_prob)
-            print
+            print("finished main")
+            print()
+            print("Image:            ",self.image)
+            print("Location:         ",self.orig_location)
+            print("Pixel value:      ",self.locpixvalue)
+            print("F_light value:     {:.3f}".format(self.flight))
+            print("Weighted F_light ")
+            print("     most likely:  {:.3f}".format(self.likely_flight))
+            print("     with a prob:  {:.3f}".format(self.likely_prob))
+            print()
 
 
     def makesegmap(self):
         if not self.quiet:
-            print "making segmentation map"
+            print("making segmentation map")
         segmap = self.basename+SEGMAPSUFF
         runsex(self.image,chkimg_type="SEGMENTATION",
                 chkimg_name=segmap)
@@ -395,8 +395,8 @@ class CalcFlight(object):
 
     def makesegmask(self):
         if not self.quiet:
-            print "making segmentation mask"
-        y,x = map(int, (self.xloc,self.yloc)) # save transposing arrays
+            print("making segmentation mask")
+        y,x = list(map(int, (self.xloc,self.yloc))) # save transposing arrays
 
         if isinstance(self.segsect,str):
             if self.segsect[0] == "t":
@@ -419,7 +419,7 @@ class CalcFlight(object):
                 # if we have +i+j..etc designations, add them from the
                 # segmask as appropriate, only adding makes sense when using u
                 toadd = re.findall("(?<=\+)(\d+)",self.segsect)
-                segvals.extend(map(int,toadd))
+                segvals.extend(list(map(int,toadd)))
         elif isinstance(self.segsect,(int,tuple,list)):
             segvals = self.segsect
 
@@ -430,7 +430,7 @@ class CalcFlight(object):
 
     def getflight(self):
         if not self.quiet:
-            print "calculating f_light"
+            print("calculating f_light")
 
         # correcting axes swap for numpy
         self.locpixvalue = self.imagearray[int(self.yloc),int(self.xloc)]
@@ -454,8 +454,8 @@ class CalcFlight(object):
         nsame = len(self.locpixnumber)
         if nsame > 1 and self.locpixvalue > 0:
             if not self.quiet:
-                print "\t{} pixels with same value".format(nsame)
-                print "\tsetting f_light to average for this pixel value"
+                print("\t{} pixels with same value".format(nsame))
+                print("\tsetting f_light to average for this pixel value")
             self.locpixnumber = self.locpixnumber[nsame/2]
         elif nsame == 1:
             self.locpixnumber = self.locpixnumber[0]
@@ -465,8 +465,8 @@ class CalcFlight(object):
             self.flight = 0
             return
         else:
-            print "locpixvalue = {}".format(self.locpixvalue)
-            print "pixelvalues = {}".format(pixelvalues)
+            print("locpixvalue = {}".format(self.locpixvalue))
+            print("pixelvalues = {}".format(pixelvalues))
             raise("Couldn't find locpixvalue in pixelvalues")
 
         # find value of the cumulative sum at locpixnumber
@@ -474,7 +474,7 @@ class CalcFlight(object):
 
     def getflight_prob(self):
         if not self.quiet:
-            print "calculating f_light probability distribution"
+            print("calculating f_light probability distribution")
 
         # swap axes for numpy
         y,x = self.xloc, self.yloc
@@ -485,7 +485,7 @@ class CalcFlight(object):
                   min(math.ceil(x+3*xs),self.imagearray.shape[0]),
                   max(y-3*ys,0),
                   min(math.ceil(y+3*ys),self.imagearray.shape[1]))
-        minx,maxx,miny,maxy = map(int, bounds)
+        minx,maxx,miny,maxy = list(map(int, bounds))
 
         pco = self.maskedarray[minx:maxx,miny:maxy]
 
@@ -533,7 +533,7 @@ class CalcFlight(object):
 
     def makeplots(self):
         if not self.quiet:
-            print "making plots"
+            print("making plots")
         # Heatmap plot:
         plt.clf()
         # clip top/bottom pixel values for plotting
@@ -551,12 +551,12 @@ class CalcFlight(object):
         # calculate min/max including locuncert if given
         if self.locuncert is not None:
             sigx, sigy = self.locuncert
-            minx,maxx,miny,maxy = map(int,
+            minx,maxx,miny,maxy = list(map(int,
                                   (min(min(z[0]),self.yloc-sigy)-1,
                                    max(max(z[0]),self.yloc+sigy)+2,
                                    min(min(z[1]),self.xloc-sigx)-1,
                                    max(max(z[1]),self.xloc+sigx)+2)
-                                  )
+                                  ))
         else:
             minx,maxx,miny,maxy = (min(z[0])-1,max(z[0])+2,
                                    min(z[1])-1,max(z[1])+2)
@@ -605,14 +605,14 @@ class CalcFlight(object):
                 try:
                     orientat = self.hdr["ORIENTAT"]
                 except KeyError:
-                    print "\tORIENTAT not in FITS header, skipping N-E plotting"
+                    print("\tORIENTAT not in FITS header, skipping N-E plotting")
                     orientat = False
             elif isinstance(self.compass,(int,float)):
                 orientat = self.compass
             else:
-                print "\tbad type of `compass`, %s. Must be bool, int or float"\
-                    % type(self.compass)
-                print "\tskipping N-E plotting"
+                print("\tbad type of `compass`, %s. Must be bool, int or float"\
+                    % type(self.compass))
+                print("\tskipping N-E plotting")
                 orientat = False
             if orientat is not False:
                 compass = AnchoredCompass(ax1,ori=orientat)
@@ -751,33 +751,33 @@ if __name__ == "__main__":
 
     splitloc = args.loc.split(",")
     if len(splitloc) != 2:
-        print "location should be zero-indexed coordinates of the format `x,y`"
+        print("location should be zero-indexed coordinates of the format `x,y`")
         sys.exit(2)
     else:
         try:
-            args.loc = map(float,splitloc)
+            args.loc = list(map(float,splitloc))
         except ValueError:
-            print "location needs to be x,y pixel coordinates, numeric only"
+            print("location needs to be x,y pixel coordinates, numeric only")
             sys.exit(2)
     if args.locuncert is not None:
         splitlocuncert = args.locuncert.split(",")
         if len(splitlocuncert) != 2:
-            print "locuncert should be of the format `sigx,sigy`"
+            print("locuncert should be of the format `sigx,sigy`")
             sys.exit(2)
         else:
             try:
-                args.locuncert = map(float, splitlocuncert)
+                args.locuncert = list(map(float, splitlocuncert))
             except ValueError:
-                print "locuncert needs to be `sigx,sigy`, numeric only"
+                print("locuncert needs to be `sigx,sigy`, numeric only")
                 sys.exit(2)
 
     if args.segsect != "u" and args.segsect[0] != "t":
         splitsect = args.segsect.split(",")
         try:
-            args.segsect = map(int,splitsect)
+            args.segsect = list(map(int,splitsect))
         except ValueError:
-            print "segsect must be comma-separated list of integer values if",
-            print "defining sections to use"
+            print("segsect must be comma-separated list of integer values if", end=' ')
+            print("defining sections to use")
             sys.exit(2)
 
     try:
@@ -789,29 +789,29 @@ if __name__ == "__main__":
         try:
             fits.open(args.segmap)
         except IOError:
-            print "Couldn't open {} with fits, make sure it exists and is"\
-                .format(args.segmap),
-            print "a valid FITS file"
+            print("Couldn't open {} with fits, make sure it exists and is"\
+                .format(args.segmap), end=' ')
+            print("a valid FITS file")
             sys.exit(2)
     if args.segmask is not None:
         try:
             fits.open(args.segmask)
         except IOError:
-            print "Couldn't open {} with fits, make sure it exists and is"\
-                .format(args.segmask),
-            print "a valid FITS file"
+            print("Couldn't open {} with fits, make sure it exists and is"\
+                .format(args.segmask), end=' ')
+            print("a valid FITS file")
             sys.exit(2)
     if args.marker_loc is not None:
         splitmarker = args.marker_loc.split(",")
         if len(splitmarker)% 2 != 0:
-            print "marker_loc should be pairs of coordinates `x1,y1,x2,y2..`"
+            print("marker_loc should be pairs of coordinates `x1,y1,x2,y2..`")
             sys.exit(2)
         else:
             try:
-                l = map(float, splitmarker)
+                l = list(map(float, splitmarker))
                 args.marker_loc = [l[i:i+2] for i in range(0,len(l),2)]
             except ValueError:
-                print "marker_loc needs to be `x1,y1,x2,y2..` only numeric"
+                print("marker_loc needs to be `x1,y1,x2,y2..` only numeric")
                 sys.exit(2)
     if args.marker_style is not None:
         args.marker_style = args.marker_style.split(",")
